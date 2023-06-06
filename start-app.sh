@@ -1,2 +1,2 @@
-cd /caminho/para/a/pasta/do/projeto
+cd /home/ubuntu/api/taurus-app/finance-api
 mvn spring-boot:run
