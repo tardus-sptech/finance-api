@@ -1,7 +1,6 @@
 package com.taurus.financeapi.modules.spentlimit.service;
 
 import com.taurus.financeapi.modules.category.service.CategoryService;
-import com.taurus.financeapi.modules.mail.EnviaEmailService;
 import com.taurus.financeapi.modules.spent.repository.SpentRepository;
 import com.taurus.financeapi.modules.spentlimit.dto.SpentLimitRequest;
 import com.taurus.financeapi.modules.spentlimit.dto.SpentLimitResponse;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -33,8 +31,6 @@ public class SpentLimitService {
     @Autowired
     private CategoryService categoryService;
 
-    @Autowired
-    private EnviaEmailService emailSend;
 
     public SpentLimitResponse save(SpentLimitRequest request) {
 

@@ -1,8 +1,9 @@
 package com.taurus.financeapi.modules.spent.service;
 
 import com.taurus.financeapi.config.exception.ValidationException;
+import com.taurus.financeapi.modules.category.model.Category;
+import com.taurus.financeapi.modules.category.repository.CategoryRepository;
 import com.taurus.financeapi.modules.category.service.CategoryService;
-import com.taurus.financeapi.modules.mail.EnviaEmailService;
 import com.taurus.financeapi.modules.spent.dto.SpentRequest;
 import com.taurus.financeapi.modules.spent.dto.SpentResponse;
 import com.taurus.financeapi.modules.spent.model.Spent;
@@ -15,9 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -32,10 +35,10 @@ public class SpentService {
 
     @Lazy
     @Autowired
-    private CategoryService categoryService;
-
+    private CategoryRepository categoryRepository;
+    @Lazy
     @Autowired
-    private EnviaEmailService sendEmail;
+    private CategoryService categoryService;
 
     @Autowired
     private SpentLimitRepository spentLimitRepository;
@@ -60,12 +63,6 @@ public class SpentService {
             gastoSpent += spentie;
             gasto += byUserId.get(i).getCategorySpent();
         }
-        sendEmail.enviar(user.getEmail(), "ALERTA DE GASTO", "Olá, " +
-                user.getName() +
-                "\n\nVocê gastou " + gastoSpent
-                +" de " + gasto + "\nRecomendamos fazer uma divisão de gastos 50 - 30 - 20. " +
-                "\nPara mais dicas, acesse nossas redes." +
-                "\n\nAtenciosamente, Taurus.");
 
         return SpentResponse.of(spent);
     }
@@ -83,7 +80,6 @@ public class SpentService {
                 .map(SpentResponse::of)
                 .collect(Collectors.toList());
     }
-
 
     public List<SpentResponse> findAll() {
         return spentRepository
@@ -172,7 +168,16 @@ public class SpentService {
         user.setValueInAccount(user.getValueInAccount() - newSpent.getValue());
         spentRepository.save(newSpent);
     }
+    public Double getTotalSpentValueByCategory(Category category) {
+        List<Spent> spentList = spentRepository.findByCategory(category);
+        Double totalSpent = 0.0;
 
+        for (Spent spent : spentList) {
+            totalSpent += spent.getValue();
+        }
+
+        return totalSpent;
+    }
     public int countSpenties(Integer idUSer){
         return spentRepository.countSpentByUserId(idUSer);
     }

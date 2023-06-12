@@ -1,6 +1,8 @@
 package com.taurus.financeapi.modules.spent.controller;
 
 import com.taurus.financeapi.modules.adt.Fila;
+import com.taurus.financeapi.modules.category.model.Category;
+import com.taurus.financeapi.modules.category.repository.CategoryRepository;
 import com.taurus.financeapi.modules.category.service.CategoryService;
 import com.taurus.financeapi.modules.gain.service.GainService;
 import com.taurus.financeapi.modules.spent.dto.SpentRequest;
@@ -33,6 +35,9 @@ public class SpentController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private UserService userService;
@@ -144,6 +149,17 @@ public class SpentController {
         }
 
         return ResponseEntity.status(200).body("Não há gastos registrados na fila");
+    }
+
+    @GetMapping("/category/{categoryId}/total")
+    public Double getTotalSpentValueByCategory(@PathVariable Integer categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+
+        if (category != null) {
+            return spentService.getTotalSpentValueByCategory(category);
+        }
+
+        return 0.0;
     }
 
     @GetMapping(value = "/user/file-txt/{idUser}", produces = "text/plain")
