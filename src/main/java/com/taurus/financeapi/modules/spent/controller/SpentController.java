@@ -1,17 +1,13 @@
 package com.taurus.financeapi.modules.spent.controller;
 
 import com.taurus.financeapi.modules.adt.Fila;
-import com.taurus.financeapi.modules.category.model.Category;
-import com.taurus.financeapi.modules.category.repository.CategoryRepository;
 import com.taurus.financeapi.modules.category.service.CategoryService;
 import com.taurus.financeapi.modules.gain.service.GainService;
-import com.taurus.financeapi.modules.spent.dto.CategorySpentDTO;
 import com.taurus.financeapi.modules.spent.dto.SpentRequest;
 import com.taurus.financeapi.modules.spent.dto.SpentResponse;
 import com.taurus.financeapi.modules.spent.model.Spent;
 import com.taurus.financeapi.modules.spent.service.SpentService;
 import com.taurus.financeapi.modules.user.model.User;
-import com.taurus.financeapi.modules.user.repository.UserRepository;
 import com.taurus.financeapi.modules.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +19,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -38,12 +33,6 @@ public class SpentController {
 
     @Autowired
     private CategoryService categoryService;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
@@ -155,11 +144,6 @@ public class SpentController {
         }
 
         return ResponseEntity.status(200).body("Não há gastos registrados na fila");
-    }
-
-    @GetMapping("/categories/{userId}")
-    public List<CategorySpentDTO> getAllCategoriesWithSpentByUser(@PathVariable Integer userId) {
-        return spentService.getAllCategoriesWithSpentByUserId(userId);
     }
 
     @GetMapping(value = "/user/file-txt/{idUser}", produces = "text/plain")

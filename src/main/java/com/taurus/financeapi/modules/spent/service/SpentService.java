@@ -1,10 +1,7 @@
 package com.taurus.financeapi.modules.spent.service;
 
 import com.taurus.financeapi.config.exception.ValidationException;
-import com.taurus.financeapi.modules.category.model.Category;
-import com.taurus.financeapi.modules.category.repository.CategoryRepository;
 import com.taurus.financeapi.modules.category.service.CategoryService;
-import com.taurus.financeapi.modules.spent.dto.CategorySpentDTO;
 import com.taurus.financeapi.modules.spent.dto.SpentRequest;
 import com.taurus.financeapi.modules.spent.dto.SpentResponse;
 import com.taurus.financeapi.modules.spent.model.Spent;
@@ -12,16 +9,14 @@ import com.taurus.financeapi.modules.spent.repository.SpentRepository;
 import com.taurus.financeapi.modules.spentlimit.model.SpentLimit;
 import com.taurus.financeapi.modules.spentlimit.repository.SpentLimitRepository;
 import com.taurus.financeapi.modules.user.model.User;
-import com.taurus.financeapi.modules.user.repository.UserRepository;
 import com.taurus.financeapi.modules.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -32,18 +27,8 @@ public class SpentService {
 
     @Lazy
     @Autowired
-    private SpentService spentService;
-    @Lazy
-    @Autowired
     private SpentRepository spentRepository;
 
-    @Lazy
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Lazy
-    @Autowired
-    private UserRepository userRepository;
     @Lazy
     @Autowired
     private CategoryService categoryService;
@@ -88,6 +73,7 @@ public class SpentService {
                 .map(SpentResponse::of)
                 .collect(Collectors.toList());
     }
+
 
     public List<SpentResponse> findAll() {
         return spentRepository
@@ -177,22 +163,6 @@ public class SpentService {
         spentRepository.save(newSpent);
     }
 
-    public List<CategorySpentDTO> getAllCategoriesWithSpentByUserId(Integer userId) {
-        List<CategorySpentDTO> categorySpentDTOList = new ArrayList<>();
-        User user = userRepository.findById(userId).orElse(null);
-
-        if (user != null) {
-            List<Category> categories = categoryRepository.findAll();
-
-            for (Category category : categories) {
-                Double totalSpentValue = spentRepository.getTotalSpentValueByCategoryAndUser(category, user);
-                CategorySpentDTO categorySpentDTO = new CategorySpentDTO(category.getDescription(), totalSpentValue);
-                categorySpentDTOList.add(categorySpentDTO);
-            }
-        }
-
-        return categorySpentDTOList;
-    }
     public int countSpenties(Integer idUSer){
         return spentRepository.countSpentByUserId(idUSer);
     }
