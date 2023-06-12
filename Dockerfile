@@ -1,4 +1,4 @@
-# Base image with Maven Project
+# Base image with Maven
 FROM maven:3.8-openjdk AS build
 
 WORKDIR /build
