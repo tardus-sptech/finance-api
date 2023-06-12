@@ -44,11 +44,8 @@ public class Spent {
         createdAt = LocalDateTime.now();
     }
 
-    public static Spent of(SpentRequest request,
-                           Category category,
-                           User user) {
-        return Spent
-                .builder()
+    public static Spent of(SpentRequest request, Category category, User user) {
+        return Spent.builder()
                 .name(request.getName())
                 .value(request.getValue())
                 .category(category)
