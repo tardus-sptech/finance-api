@@ -3,6 +3,7 @@ package com.taurus.financeapi.modules.spent.controller;
 import com.taurus.financeapi.modules.adt.Fila;
 import com.taurus.financeapi.modules.category.service.CategoryService;
 import com.taurus.financeapi.modules.gain.service.GainService;
+import com.taurus.financeapi.modules.spent.dto.CategorySpentDTO;
 import com.taurus.financeapi.modules.spent.dto.SpentRequest;
 import com.taurus.financeapi.modules.spent.dto.SpentResponse;
 import com.taurus.financeapi.modules.spent.model.Spent;
@@ -98,6 +99,10 @@ public class SpentController {
             return ResponseEntity.status(200).body(filaSpent.getFila());
         }
         return ResponseEntity.status(204).build();
+    }
+    @GetMapping("/categories/{userId}")
+    public List<CategorySpentDTO> getAllCategoriesWithSpentByUser(@PathVariable Integer userId) {
+        return spentService.getAllCategoriesWithSpentByUserId(userId);
     }
 
     @PostMapping(value = "/user/file-txt", consumes = "text/*")
